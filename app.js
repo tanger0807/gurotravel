@@ -47,6 +47,14 @@
     renderThemes();
     setupGlobalEvents();
 
+    if (typeof kakao === 'undefined') {
+      console.error('카카오 지도 SDK 로드 실패. 카카오 개발자 콘솔에서 도메인(http://localhost) 등록 여부를 확인하세요.');
+      document.getElementById('kakao-map').innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9B9B94;font-size:13px">지도를 불러올 수 없습니다</div>';
+      renderCourses();
+      return;
+    }
+
     kakao.maps.load(() => {
       initKakaoMap();
       updateUI();
@@ -472,5 +480,10 @@
     };
   }
 
-  window.addEventListener('DOMContentLoaded', init);
+  // 스크립트가 <body> 하단에 위치하므로 DOM은 이미 파싱 완료 상태일 수 있음
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

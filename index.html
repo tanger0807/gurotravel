@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구로구 여행코스 — 오류동 · 항동</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#2D6A4F',
+              hover:   '#245C43',
+              active:  '#1B4D38',
+              light:   '#E8F5F0',
+              mid:     '#40916C',
+              pale:    '#74C69D',
+            },
+            accent: {
+              DEFAULT: '#F4845F',
+              hover:   '#E06B45',
+              light:   '#FEF0EB',
+            },
+            surface: {
+              base:     '#FAFAF8',
+              elevated: '#FFFFFF',
+              comingSoon: '#F3F3F0',
+            },
+            content: {
+              primary:   '#1C1C1A',
+              secondary: '#6B6B65',
+              tertiary:  '#9B9B94',
+              disabled:  '#BCBCB5',
+            },
+          },
+          borderRadius: {
+            sm:  '8px',
+            md:  '12px',
+            lg:  '16px',
+            xl:  '20px',
+            pill: '9999px',
+          },
+          fontFamily: {
+            serif: ['Noto Serif KR', 'Georgia', 'serif'],
+            sans:  ['Pretendard', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            sm: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+            md: '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)',
+            lg: '0 8px 24px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts for Noto Serif KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Pretendard Font CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+  <!-- Kakao Maps SDK -->
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a3e455b5a6d8f9181df38f3295886fd1&autoload=false"></script>
+
+  <style>
+    body {
+      background-color: #FAFAF8;
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: #1C1C1A;
+    }
+    .font-serif {
+      font-family: 'Noto Serif KR', Georgia, serif;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .fade-in {
+      animation: fadeIn 0.25s ease-out both;
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95) translateY(4px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .scale-in {
+      animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-up {
+      animation: sheetUp 0.35s cubic-bezier(0.32, 0.94, 0.6, 1) both;
+    }
+  </style>
+</head>
+<body class="bg-surface-base text-content-primary">
+
+  <div class="max-w-2xl mx-auto bg-surface-elevated min-h-screen shadow-md flex flex-col relative">
+    
+    <!-- ── 헤더: 스티키 상단 ── -->
+    <header class="sticky top-0 z-40 bg-surface-elevated/95 backdrop-blur-md border-b border-black/[0.05] py-3 px-4">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-md bg-brand flex items-center justify-center text-white text-xs font-serif font-bold">책</span>
+          <span class="font-serif text-lg font-bold text-content-primary">구로 책길</span>
+        </div>
+        <span class="text-xs text-content-tertiary font-medium">오류동 · 항동 Curation</span>
+      </div>
+      <!-- 테마 탭 필터 (S-001) -->
+      <div id="theme-tabs" class="flex gap-2 overflow-x-auto scrollbar-hide py-1" role="tablist" aria-label="여행 테마 필터">
+        <!-- JS에 의해 동적 생성됩니다. -->
+      </div>
+    </header>
+
+    <!-- ── 히어로 배너 (감성 인트로) ── -->
+    <section id="hero-banner" class="relative h-60 overflow-hidden bg-brand-pale">
+      <img src="images/rail.jpg" alt="항동철길" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/75"></div>
+      <div class="absolute inset-x-5 top-8">
+        <p class="text-[10px] uppercase font-bold tracking-widest text-white/80 mb-1">Guro · Oryu · Hang</p>
+      </div>
+      <div class="absolute inset-x-5 bottom-6 text-white">
+        <h1 class="font-serif text-2xl font-bold leading-tight mb-2">책과 숲을 잇는<br>동네 한나절 산책</h1>
+        <p class="text-xs text-white/90 leading-relaxed font-sans">독립서점 네 곳, 로컬 시장과 수목원까지<br>흩어진 장소들을 하나의 코스로 만나보세요.</p>
+      </div>
+    </section>
+
+    <!-- ── 동적 안내 바 (코스 선택 시 노출) ── -->
+    <div id="active-course-bar" class="hidden flex items-center justify-between gap-3 px-4 py-2 bg-brand-light border-b border-brand-mid/10 text-xs text-brand font-medium">
+      <span id="active-course-text">📍 코스 동선을 지도에 표시 중</span>
+      <button id="clear-active-course" class="text-brand-mid hover:text-brand font-bold cursor-pointer transition-colors px-1 py-0.5">선택 해제</button>
+    </div>
+
+    <!-- ── 지도 섹션 (S-001) ── -->
+    <section id="map-section" class="relative w-full aspect-[4/3] overflow-hidden border-b border-black/[0.04]">
+      <!-- 카카오맵 컨테이너 -->
+      <div id="kakao-map" class="absolute inset-0 w-full h-full"></div>
+
+      <!-- 범례 (Legend) -->
+      <div class="absolute bottom-3 right-3 z-30 bg-surface-elevated/90 backdrop-blur-sm rounded-md p-2 shadow-sm border border-black/[0.06] flex flex-col gap-1.5 text-[10px] font-medium text-content-secondary">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand flex-shrink-0"></span>
+          <span>독립서점</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent flex-shrink-0"></span>
+          <span>카페 · 맛집</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#4A90D9] flex-shrink-0"></span>
+          <span>자연 · 문화</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 추천 코스 섹션 (S-001) ── -->
+    <main class="p-4 flex-1">
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="font-serif text-lg font-bold text-content-primary">추천 테마 코스</h2>
+        <span id="course-count" class="text-xs text-content-tertiary font-sans">0개 코스</span>
+      </div>
+
+      <!-- 카드 그리드 -->
+      <div id="courses-grid" class="flex flex-col gap-4">
+        <!-- JS에서 코스 카드가 동적 생성됩니다 -->
+      </div>
+    </main>
+
+    <!-- ── 푸터 ── -->
+    <footer class="p-6 text-center border-t border-black/[0.05] bg-surface-base">
+      <p id="footer-note" class="text-[11px] text-content-tertiary leading-relaxed">
+        <!-- JS에서 footerNote가 동적 주입됩니다 -->
+      </p>
+    </footer>
+
+    <!-- ── 모달: S-002 코스 상세 모달 ── -->
+    <div id="course-modal" class="fixed inset-0 z-50 hidden bg-black/45 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <!-- 모달 카드: 모바일 바텀시트, 태블릿/PC 센터 팝업 -->
+      <div class="bg-surface-elevated w-full sm:max-w-md rounded-t-xl sm:rounded-xl shadow-lg max-h-[85vh] sm:max-h-[75vh] flex flex-col sheet-up sm:scale-in overflow-hidden">
+        
+        <!-- 모바일 드래그 핸들 데코레이터 -->
+        <div class="w-10 h-1 bg-black/[0.12] rounded-full mx-auto my-2 sm:hidden flex-shrink-0"></div>
+        
+        <!-- 모달 헤더 -->
+        <div class="px-5 pt-3 sm:pt-5 pb-4 border-b border-black/[0.06] flex items-start justify-between flex-shrink-0 relative">
+          <div>
+            <h2 id="modal-title" class="font-serif text-lg font-bold text-content-primary">
+              오류동 문학 기행
+            </h2>
+            <p id="modal-subtitle" class="text-xs text-content-secondary mt-1">
+              총 7~8시간 · 1인 약 55,000원
+            </p>
+          </div>
+          <button id="close-modal" class="text-content-secondary hover:text-content-primary hover:bg-black/[0.04] p-1.5 rounded-full transition-colors cursor-pointer" aria-label="모달 닫기">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- 모달 상세 내용 스크롤 바디 -->
+        <div id="modal-body" class="p-5 overflow-y-auto flex-1 font-sans">
+          <!-- 타임라인 리스트 -->
+          <ol id="modal-timeline" class="relative border-l-2 border-brand-pale ml-3.5 pl-5 space-y-5">
+            <!-- JS에서 타임라인 스톱이 동적 생성됩니다 -->
+          </ol>
+        </div>
+
+        <!-- 모달 푸터 (총 비용 정보) -->
+        <div class="p-5 border-t border-black/[0.06] bg-surface-base flex items-center justify-between flex-shrink-0">
+          <span class="text-xs text-content-secondary font-medium">1인 예상 총비용</span>
+          <span id="modal-total-cost" class="text-lg font-bold text-brand font-sans">55,000원</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 팝업: S-004 Coming Soon 팝업 ── -->
+    <div id="coming-soon-popup" class="fixed inset-0 z-50 hidden bg-black/45 backdrop-blur-xs flex items-center justify-center p-6" role="dialog" aria-modal="true">
+      <div class="bg-surface-elevated rounded-xl shadow-lg p-6 max-w-xs w-full text-center scale-in">
+        <div class="text-3xl mb-3">🚧</div>
+        <h3 id="popup-title" class="font-serif text-base font-bold text-content-primary mb-2">온수동 코스 준비 중</h3>
+        <p id="popup-message" class="text-xs text-content-secondary leading-relaxed mb-5">
+          2025년 답사 데이터를 기반으로<br>더 알찬 코스를 준비하고 있습니다.
+        </p>
+        <button id="close-popup" class="w-full bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs font-semibold py-3 px-4 rounded-md transition-colors cursor-pointer">
+          알겠어요
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 데이터 및 비즈니스 로직 스크립트 로드 -->
+  <script src="courses-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

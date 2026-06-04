@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구로 책길 — 인쇄용</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      brand: { DEFAULT:'#2D6A4F' }, accent: { DEFAULT:'#F4845F' },
+    } } } };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; background: #ECEBE6; }
+    body { font-family: 'Pretendard', -apple-system, sans-serif; color: #1C1C1A; -webkit-font-smoothing: antialiased; }
+    .font-serif { font-family: 'Noto Serif KR', Georgia, serif; }
+
+    .ph {
+      position: relative; overflow: hidden;
+      background:
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 11px),
+        var(--ph-base, #74C69D);
+    }
+    .ph-cap { font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: 0.04em; color: rgba(255,255,255,0.92); }
+
+    /* 화면용: 페이지를 카드처럼 가운데 정렬 */
+    #root { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 28px 16px; }
+    .page {
+      width: 794px; min-height: 1123px; background: #FAFAF8;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.10); border-radius: 4px;
+      overflow: hidden; position: relative;
+      display: flex; flex-direction: column;
+    }
+
+    @media print {
+      html, body { background: #fff; }
+      #root { display: block; padding: 0; gap: 0; }
+      .page {
+        width: 100%; min-height: auto; height: auto;
+        box-shadow: none; border-radius: 0;
+        break-after: page; page-break-after: always;
+      }
+      .page:last-child { break-after: auto; page-break-after: auto; }
+      .avoid-break { break-inside: avoid; page-break-inside: avoid; }
+      *, *::before, *::after {
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+    @page { size: A4 portrait; margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="data.js"></script>
+  <script type="text/babel" src="components/photo.jsx"></script>
+  <script type="text/babel" src="components/map.jsx"></script>
+  <script type="text/babel" src="components/cards.jsx"></script>
+  <script type="text/babel" src="print.jsx"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구로 책길 — 오류동·항동 여행코스 시안</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand:   { DEFAULT:'#2D6A4F', hover:'#245C43', active:'#1B4D38', light:'#E8F5F0', mid:'#40916C', pale:'#74C69D' },
+            accent:  { DEFAULT:'#F4845F', hover:'#E06B45', light:'#FEF0EB' },
+            surface: { base:'#FAFAF8', elevated:'#FFFFFF', cs:'#F3F3F0' },
+            content: { primary:'#1C1C1A', secondary:'#6B6B65', tertiary:'#9B9B94', disabled:'#BCBCB5' },
+            marker:  { book:'#2D6A4F', market:'#F4845F', nature:'#4A90D9', off:'#BCBCB5' },
+          },
+          borderRadius: { sm:'8px', md:'12px', lg:'16px', xl:'20px', pill:'9999px' },
+          fontFamily: {
+            serif: ['"Noto Serif KR"', 'Georgia', 'serif'],
+            sans:  ['Pretendard', '-apple-system', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: #ECEBE6;
+      background-image: radial-gradient(rgba(0,0,0,0.045) 1px, transparent 1px);
+      background-size: 22px 22px;
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: #1C1C1A;
+      overflow: hidden;
+    }
+    .font-serif { font-family: 'Noto Serif KR', Georgia, serif; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .app-scroll::-webkit-scrollbar { width: 0; }
+
+    /* tonal photo placeholder */
+    .ph {
+      position: relative; overflow: hidden;
+      background:
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 11px),
+        var(--ph-base, #74C69D);
+    }
+    .ph-cap {
+      font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+      font-size: 10px; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.92);
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform: translateY(8px);} to {opacity:1; transform:none;} }
+    .fade-up { animation: fadeUp .4s ease both; }
+    @keyframes popIn { from { opacity:0; transform: scale(.9) translateY(4px);} to {opacity:1; transform:none;} }
+    .pop-in { animation: popIn .18s ease both; }
+    @keyframes sheetUp { from { transform: translateY(100%);} to { transform: translateY(0);} }
+    .sheet-up { animation: sheetUp .32s cubic-bezier(.32,.72,.24,1) both; }
+    @keyframes dim { from {opacity:0;} to {opacity:1;} }
+    .dim-in { animation: dim .25s ease both; }
+    @keyframes pinDrop { 0%{opacity:0; transform: translate(-50%,-140%) scale(.6);} 60%{opacity:1;} 100%{opacity:1; transform: translate(-50%,-100%) scale(1);} }
+    .pin-drop { animation: pinDrop .42s cubic-bezier(.34,1.4,.5,1) both; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="data.js"></script>
+  <script type="text/babel" src="frames/ios-frame.jsx"></script>
+  <script type="text/babel" src="frames/tweaks-panel.jsx"></script>
+  <script type="text/babel" src="components/photo.jsx"></script>
+  <script type="text/babel" src="components/map.jsx"></script>
+  <script type="text/babel" src="components/cards.jsx"></script>
+  <script type="text/babel" src="components/modal.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

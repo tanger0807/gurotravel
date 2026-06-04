@@ -46,18 +46,47 @@
     footerNoteText.textContent = DATA.footerNote;
     renderThemes();
     setupGlobalEvents();
+    renderCourses(); // SDK 로드와 무관하게 코스 목록 즉시 표시
 
-    if (typeof kakao === 'undefined') {
-      console.error('카카오 지도 SDK 로드 실패. 카카오 개발자 콘솔에서 도메인(http://localhost) 등록 여부를 확인하세요.');
-      document.getElementById('kakao-map').innerHTML =
-        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9B9B94;font-size:13px">지도를 불러올 수 없습니다</div>';
-      renderCourses();
-      return;
-    }
+    loadKakaoSDK()
+      .then(() => new Promise(resolve => kakao.maps.load(resolve)))
+      .then(() => {
+        initKakaoMap();
+        const activeCourse = DATA.courses.find(c => c.id === state.activeCourseId);
+        renderPins(activeCourse);
+        renderRouteLine(activeCourse);
+      })
+      .catch((err) => {
+        console.error('[카카오 지도]', err.message);
+        const mapEl = document.getElementById('kakao-map');
+        if (mapEl) {
+          mapEl.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                        height:100%;gap:6px;color:#9B9B94;font-size:12px;text-align:center;padding:16px">
+              <span style="font-size:24px">🗺️</span>
+              <span style="font-weight:600">지도를 불러올 수 없습니다</span>
+              <span style="font-size:11px;line-height:1.6">${err.message}</span>
+            </div>`;
+        }
+      });
+  }
 
-    kakao.maps.load(() => {
-      initKakaoMap();
-      updateUI();
+  // ── 카카오 SDK 동적 로드 ──
+  function loadKakaoSDK() {
+    return new Promise((resolve, reject) => {
+      if (typeof kakao !== 'undefined') { resolve(); return; }
+
+      const script = document.createElement('script');
+      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=a3e455b5a6d8f9181df38f3295886fd1&autoload=false';
+      script.onload = () => {
+        if (typeof kakao !== 'undefined') {
+          resolve();
+        } else {
+          reject(new Error('SDK 로드 성공했으나 kakao 객체 미생성 →\n카카오 개발자 콘솔에서 현재 도메인이 등록됐는지 확인하세요'));
+        }
+      };
+      script.onerror = () => reject(new Error('dapi.kakao.com 요청 실패 →\n광고 차단기를 비활성화하거나 네트워크를 확인하세요'));
+      document.head.appendChild(script);
     });
   }
 

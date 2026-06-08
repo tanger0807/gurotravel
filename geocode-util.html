@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>좌표 자동 조회 유틸리티</title>
+  <style>
+    body { font-family: monospace; padding: 24px; background: #f5f5f5; }
+    h1 { font-size: 16px; margin-bottom: 16px; }
+    #status { margin-bottom: 12px; color: #555; font-size: 13px; }
+    #result {
+      background: white; border: 1px solid #ddd; border-radius: 6px;
+      padding: 16px; white-space: pre; overflow-x: auto;
+      font-size: 12px; line-height: 1.7;
+    }
+    button {
+      margin-bottom: 12px; padding: 8px 16px; cursor: pointer;
+      background: #2D6A4F; color: white; border: none; border-radius: 4px;
+      font-size: 13px;
+    }
+    .ok  { color: #2D6A4F; }
+    .err { color: #c0392b; }
+    .warn { color: #e67e22; }
+  </style>
+</head>
+<body>
+  <h1>카카오 Places API — 장소 좌표 자동 조회</h1>
+  <div id="status">SDK 로딩 중...</div>
+  <button id="run-btn" disabled>조회 시작</button>
+  <div id="result">결과가 여기 표시됩니다.</div>
+
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a3e455b5a6d8f9181df38f3295886fd1&autoload=false&libraries=services"></script>
+  <script>
+    const SEARCH_TARGETS = [
+      { id: 'oryu_market',       name: '오류버들시장',          hint: '서울 구로구 오류동' },
+      { id: 'poong_danrak',      name: '포옹단락',              hint: '서울 구로구 오류동' },
+      { id: 'bcg_books',         name: '비씨지북스',            hint: '서울 구로구 오류동' },
+      { id: 'kok_kok_kok',       name: '콕콕콕',                hint: '서울 구로구 오류동' },
+      { id: 'guduin_hall',       name: '더불어숲 성공회대',     hint: '서울 구로구 항동' },
+      { id: 'guro_arboretum',    name: '서울푸른수목원',        hint: '서울 구로구 항동' },
+      { id: 'gongchaek',         name: '책방공책',              hint: '서울 구로구 항동' },
+      { id: 'greenwich_cafe',    name: '그리니치카페',          hint: '서울 구로구 항동' },
+      { id: 'hangdong_rail',     name: '항동철길',              hint: '서울 구로구 항동' },
+      { id: 'cheonwang_shelter', name: '천왕산 책쉼터',         hint: '서울 구로구 천왕동' },
+      { id: 'onsu',              name: '온수역',                hint: '서울 구로구 온수동' },
+    ];
+
+    const statusEl = document.getElementById('status');
+    const resultEl = document.getElementById('result');
+    const runBtn   = document.getElementById('run-btn');
+
+    kakao.maps.load(() => {
+      statusEl.textContent = 'SDK 준비 완료. [조회 시작] 버튼을 누르세요.';
+      statusEl.className = 'ok';
+      runBtn.disabled = false;
+    });
+
+    runBtn.addEventListener('click', async () => {
+      runBtn.disabled = true;
+      statusEl.textContent = '조회 중...';
+      resultEl.textContent = '';
+
+      const ps = new kakao.maps.services.Places();
+      const results = [];
+      const lines   = [];
+
+      for (const target of SEARCH_TARGETS) {
+        const row = await searchPlace(ps, target);
+        results.push(row);
+        const line = formatLine(row);
+        lines.push(line);
+        resultEl.innerHTML = lines.join('\n');
+      }
+
+      lines.push('');
+      lines.push('/* ── courses-data.js 업데이트용 좌표 ── */');
+      results.forEach(r => {
+        if (r.lat) {
+          lines.push(`  ${r.id}: { lat: ${r.lat}, lng: ${r.lng} },   // ${r.foundName}`);
+        }
+      });
+      resultEl.innerHTML = lines.join('\n');
+      statusEl.textContent = '완료! 아래 좌표를 courses-data.js에 반영하세요.';
+      statusEl.className = 'ok';
+      runBtn.disabled = false;
+    });
+
+    function searchPlace(ps, target) {
+      return new Promise(resolve => {
+        ps.keywordSearch(target.name + ' ' + target.hint, (data, status) => {
+          if (status === kakao.maps.services.Status.OK && data.length > 0) {
+            const top = data[0];
+            resolve({
+              id: target.id,
+              query: target.name,
+              foundName: top.place_name,
+              address: top.road_address_name || top.address_name,
+              lat: parseFloat(top.y).toFixed(7),
+              lng: parseFloat(top.x).toFixed(7),
+              ok: true,
+            });
+          } else {
+            // 힌트 없이 재시도
+            ps.keywordSearch(target.name, (data2, status2) => {
+              if (status2 === kakao.maps.services.Status.OK && data2.length > 0) {
+                const top = data2[0];
+                resolve({
+                  id: target.id,
+                  query: target.name,
+                  foundName: top.place_name,
+                  address: top.road_address_name || top.address_name,
+                  lat: parseFloat(top.y).toFixed(7),
+                  lng: parseFloat(top.x).toFixed(7),
+                  ok: true,
+                  warn: '힌트 없이 검색',
+                });
+              } else {
+                resolve({ id: target.id, query: target.name, ok: false });
+              }
+            });
+          }
+        }, { location: new kakao.maps.LatLng(37.492, 126.850), radius: 5000 });
+      });
+    }
+
+    function formatLine(r) {
+      if (!r.ok) return `<span class="err">✗ ${r.id} (${r.query}) — 결과 없음</span>`;
+      const tag = r.warn ? `<span class="warn">⚠ ${r.warn}</span>` : '<span class="ok">✓</span>';
+      return `${tag} ${r.id}\n  찾은이름: ${r.foundName}\n  주소:     ${r.address}\n  좌표:     lat ${r.lat}, lng ${r.lng}\n`;
+    }
+  </script>
+</body>
+</html>

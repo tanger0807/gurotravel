@@ -45,7 +45,7 @@ window.GURO_DATA = {
       lat: 37.4919, lng: 126.8458,
       activity: '다양한 소형 출판물, 엽서, 다이어리 꾸미기 굿즈 셀렉트 매장',
       tags: ['소형도서', '일러스트', '스탬프③'],
-      photos: ['images/book-goods.jpg']
+      photos: ['images/cokcokcok.jpg']
     },
     artchaekbogo: {
       id: 'artchaekbogo',
@@ -219,7 +219,7 @@ window.GURO_DATA = {
       totalCostKRW: 41000,
       tagline: '독립서점 3곳 스탬프 투어와 오류버들시장',
       summary: '오류버들시장의 따뜻한 로컬 활기를 느끼고 골목 속 숨겨진 감성 독립서점들을 탐방하며, 나만의 감성을 담은 독서 기행을 즐기는 1인 코스.',
-      coverImage: 'images/book-goods.jpg',
+      coverImage: 'images/cokcokcok.jpg',
       stamps: 3,
       stops: [
         { placeId: 'oryu_market',  arrival: '10:00', durationMin: 40, costKRW: 6000 },

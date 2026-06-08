@@ -196,7 +196,6 @@
     const activeThemeCourses = DATA.courses.filter(c => state.activeTheme === 'all' || c.theme === state.activeTheme);
     const visiblePlaceIds    = new Set();
     activeThemeCourses.forEach(c => c.stops.forEach(s => visiblePlaceIds.add(s.placeId)));
-    visiblePlaceIds.add('onsu');
 
     const activeCourseStops = {};
     if (activeCourse) {
@@ -205,7 +204,7 @@
 
     Object.values(DATA.places).forEach(place => {
       const isDisabled = place.category === 'disabled';
-      if (!isDisabled && !visiblePlaceIds.has(place.id)) return;
+      if (isDisabled || !visiblePlaceIds.has(place.id)) return;
 
       const isInActiveCourse = activeCourseStops[place.id] !== undefined;
       const isDimmed = activeCourse && !isInActiveCourse && !isDisabled;
@@ -403,24 +402,6 @@
       coursesGrid.appendChild(card);
     });
 
-    // Coming Soon 카드 (온수동)
-    const csCard = document.createElement('article');
-    csCard.className = 'bg-surface-comingSoon/50 rounded-lg overflow-hidden border border-black/[0.05] flex flex-col sm:flex-row opacity-75 cursor-not-allowed';
-    csCard.setAttribute('aria-label', '온수동 코스 준비 중');
-    csCard.innerHTML = `
-      <div class="relative h-32 sm:w-44 sm:h-auto overflow-hidden bg-gray-200/60 flex-shrink-0 flex items-center justify-center">
-        <span class="text-content-tertiary text-xs">사진 준비 중</span>
-      </div>
-      <div class="p-4 flex-1 flex flex-col justify-center">
-        <div class="flex items-center gap-2 mb-1.5">
-          <h3 class="font-serif text-base font-bold text-content-tertiary">온수동 코스</h3>
-          <span class="bg-gray-200 text-content-tertiary text-[9px] font-bold px-2 py-0.5 rounded-pill">Coming Soon</span>
-        </div>
-        <p class="text-xs text-content-tertiary">${DATA.comingSoon.note}</p>
-      </div>
-    `;
-    csCard.addEventListener('click', () => showComingSoon(DATA.comingSoon.popup));
-    coursesGrid.appendChild(csCard);
   }
 
   // ── 코스 상세 모달 ──

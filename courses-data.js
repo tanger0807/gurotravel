@@ -42,8 +42,9 @@ window.GURO_DATA = {
     },
     guduin_hall: {
       id: 'guduin_hall',
-      name: '구두인관·더불어숲',
+      name: '신영복선생 추모공원',
       category: 'nature',
+      address: '서울 구로구 항동 산 23-1',
       x: 69, y: 13, lat: 37.4955, lng: 126.8625,
       activity: '성공회대 신영복 선생 «더불어숲» 서화비 글귀와 사색 산책로',
       tags: ['역사문화', '신영복', '사색숲길'],

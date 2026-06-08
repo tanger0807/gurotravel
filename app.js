@@ -50,6 +50,7 @@
 
     loadKakaoSDK()
       .then(() => new Promise(resolve => kakao.maps.load(resolve)))
+      .then(() => geocodePlaces())
       .then(() => {
         initKakaoMap();
         const activeCourse = DATA.courses.find(c => c.id === state.activeCourseId);
@@ -77,7 +78,7 @@
       if (typeof kakao !== 'undefined') { resolve(); return; }
 
       const script = document.createElement('script');
-      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=a3e455b5a6d8f9181df38f3295886fd1&autoload=false';
+      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=a3e455b5a6d8f9181df38f3295886fd1&autoload=false&libraries=services';
       script.onload = () => {
         if (typeof kakao !== 'undefined') {
           resolve();
@@ -88,6 +89,23 @@
       script.onerror = () => reject(new Error('dapi.kakao.com 요청 실패 →\n광고 차단기를 비활성화하거나 네트워크를 확인하세요'));
       document.head.appendChild(script);
     });
+  }
+
+  // ── address 필드가 있는 장소 좌표 자동 보정 ──
+  function geocodePlaces() {
+    const geocoder = new kakao.maps.services.Geocoder();
+    const targets = Object.values(DATA.places).filter(p => p.address);
+    if (!targets.length) return Promise.resolve();
+
+    return Promise.all(targets.map(place => new Promise(resolve => {
+      geocoder.addressSearch(place.address, (result, status) => {
+        if (status === kakao.maps.services.Status.OK && result.length > 0) {
+          place.lat = parseFloat(result[0].y);
+          place.lng = parseFloat(result[0].x);
+        }
+        resolve();
+      });
+    })));
   }
 
   // ── 카카오맵 초기화 ──

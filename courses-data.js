@@ -231,22 +231,21 @@ window.GURO_DATA = {
     },
     {
       id: 'oryu-healing',
-      name: '오류동 골목 힐링 데이트',
-      region: '오류동',
+      name: '항동 힐링 데이트',
+      region: '항동',
       theme: 'healing',
       target: 'couple',
-      totalMinutes: 240,
-      totalCostKRW: 44500,
-      tagline: '버들시장 맛집과 이색 독립서점 투어',
-      summary: '연인과 함께 정겨운 시장 맛집에서 든든히 먹고, 서로에게 어울리는 독립출판물을 골라 선물하며 골목 안 숨은 카페에서 여유를 만끽하는 커플 코스.',
-      coverImage: 'images/soba-food.jpg',
+      totalMinutes: 220,
+      totalCostKRW: 21000,
+      tagline: '구두인관 산책부터 수목원·책방·식사까지',
+      summary: '성공회대 구두인관을 거닐며 초록 캠퍼스를 만끽하고, 항동 서점에서 책 한 권 고른 뒤 푸른수목원 꽃길을 산책하고 항동 식당가에서 마무리하는 커플 코스.',
+      coverImage: 'images/deobureo-sign.jpg',
       stamps: 0,
       stops: [
-        { placeId: 'oryu_market', arrival: '11:00', durationMin: 50, costKRW: 7000 },
-        { placeId: 'bcg_books',   arrival: '12:00', durationMin: 40, costKRW: 8000 },
-        { placeId: 'oryu_market', arrival: '12:50', durationMin: 60, costKRW: 15000 },
-        { placeId: 'kok_kok_kok', arrival: '14:00', durationMin: 40, costKRW: 8000 },
-        { placeId: 'oryu_market', arrival: '14:50', durationMin: 50, costKRW: 6500 }
+        { placeId: 'skhu_guduin',          arrival: '10:00', durationMin: 40,  costKRW: 0 },
+        { placeId: 'gongchaek',            arrival: '10:50', durationMin: 40,  costKRW: 8000 },
+        { placeId: 'guro_arboretum',       arrival: '11:40', durationMin: 80,  costKRW: 0 },
+        { placeId: 'hangdong_restaurants', arrival: '13:10', durationMin: 60,  costKRW: 13000 }
       ]
     },
     {

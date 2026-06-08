@@ -239,7 +239,7 @@ window.GURO_DATA = {
       totalCostKRW: 21000,
       tagline: '구두인관 산책부터 수목원·책방·식사까지',
       summary: '성공회대 구두인관을 거닐며 초록 캠퍼스를 만끽하고, 항동 서점에서 책 한 권 고른 뒤 푸른수목원 꽃길을 산책하고 항동 식당가에서 마무리하는 커플 코스.',
-      coverImage: 'images/deobureo-sign.jpg',
+      coverImage: 'images/rose-person.jpg',
       stamps: 0,
       stops: [
         { placeId: 'skhu_guduin',          arrival: '10:00', durationMin: 40,  costKRW: 0 },

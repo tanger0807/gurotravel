@@ -94,16 +94,37 @@
   // ── address 필드가 있는 장소 좌표 자동 보정 ──
   function geocodePlaces() {
     const geocoder = new kakao.maps.services.Geocoder();
-    const targets = Object.values(DATA.places).filter(p => p.address);
+    const ps       = new kakao.maps.services.Places();
+    const targets  = Object.values(DATA.places).filter(p => p.address);
     if (!targets.length) return Promise.resolve();
 
+    const center = new kakao.maps.LatLng(37.492, 126.849);
+
+    // 층수·건물 부가정보 제거 후 기본 도로명/지번 주소만 추출
+    function baseAddr(addr) {
+      return addr
+        .replace(/\s+(지하\d+층|[가-힣]*\s*\d+층)(\s|$)/g, ' ')
+        .replace(/\s+[가-힣]+관리사무소[^,]*/g, '')
+        .replace(/\s+고척스카이돔[^,]*/g, '')
+        .trim();
+    }
+
     return Promise.all(targets.map(place => new Promise(resolve => {
-      geocoder.addressSearch(place.address, (result, status) => {
-        if (status === kakao.maps.services.Status.OK && result.length > 0) {
-          place.lat = parseFloat(result[0].y);
-          place.lng = parseFloat(result[0].x);
+      // 1차: 정제된 주소로 addressSearch
+      geocoder.addressSearch(baseAddr(place.address), (res, st) => {
+        if (st === kakao.maps.services.Status.OK && res.length > 0) {
+          place.lat = parseFloat(res[0].y);
+          place.lng = parseFloat(res[0].x);
+          return resolve();
         }
-        resolve();
+        // 2차: 장소명 keywordSearch (구로구 반경 8km 내)
+        ps.keywordSearch(place.name, (data, st2) => {
+          if (st2 === kakao.maps.services.Status.OK && data.length > 0) {
+            place.lat = parseFloat(data[0].y);
+            place.lng = parseFloat(data[0].x);
+          }
+          resolve();
+        }, { location: center, radius: 8000 });
       });
     })));
   }
@@ -119,7 +140,7 @@
     // 전체 장소가 보이도록 초기 범위 자동 조정
     const bounds = new kakao.maps.LatLngBounds();
     Object.values(DATA.places).forEach(p => {
-      if (p.category !== 'disabled') bounds.extend(new kakao.maps.LatLng(p.lat, p.lng));
+      bounds.extend(new kakao.maps.LatLng(p.lat, p.lng));
     });
     kakaoMap.setBounds(bounds, 50);
 
@@ -156,7 +177,7 @@
       if (kakaoMap) {
         const bounds = new kakao.maps.LatLngBounds();
         Object.values(DATA.places).forEach(p => {
-          if (p.category !== 'disabled') bounds.extend(new kakao.maps.LatLng(p.lat, p.lng));
+          bounds.extend(new kakao.maps.LatLng(p.lat, p.lng));
         });
         kakaoMap.setBounds(bounds, 50);
       }
@@ -211,21 +232,14 @@
     Object.values(pinOverlays).forEach(o => o.setMap(null));
     pinOverlays = {};
 
-    const activeThemeCourses = DATA.courses.filter(c => state.activeTheme === 'all' || c.theme === state.activeTheme);
-    const visiblePlaceIds    = new Set();
-    activeThemeCourses.forEach(c => c.stops.forEach(s => visiblePlaceIds.add(s.placeId)));
-
     const activeCourseStops = {};
     if (activeCourse) {
       activeCourse.stops.forEach((s, idx) => { activeCourseStops[s.placeId] = idx + 1; });
     }
 
     Object.values(DATA.places).forEach(place => {
-      const isDisabled = place.category === 'disabled';
-      if (isDisabled || !visiblePlaceIds.has(place.id)) return;
-
       const isInActiveCourse = activeCourseStops[place.id] !== undefined;
-      const isDimmed = activeCourse && !isInActiveCourse && !isDisabled;
+      const isDimmed = activeCourse && !isInActiveCourse;
       const order    = activeCourseStops[place.id];
       const color    = DATA.categoryMeta[place.category].color;
       const isSel    = state.selectedPlaceId === place.id;
@@ -236,7 +250,7 @@
       const content = `
         <button
           id="pin-${place.id}"
-          aria-label="${place.name} ${isDisabled ? '준비 중' : '상세 정보 보기'}"
+          aria-label="${place.name} 상세 정보 보기"
           style="background:transparent;border:none;padding:0;cursor:pointer;opacity:${isDimmed ? 0.34 : 1};display:block;transition:opacity .2s,transform .2s"
           onmouseover="this.style.transform='scale(1.12)'"
           onmouseout="this.style.transform='scale(1)'"
@@ -264,12 +278,8 @@
       if (pinEl) {
         pinEl.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (isDisabled) {
-            showComingSoon(DATA.comingSoon.popup);
-          } else {
-            state.selectedPlaceId = state.selectedPlaceId === place.id ? null : place.id;
-            updateUI();
-          }
+          state.selectedPlaceId = state.selectedPlaceId === place.id ? null : place.id;
+          updateUI();
         });
       }
     });
